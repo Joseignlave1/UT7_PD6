@@ -1,0 +1,116 @@
+UT7_PD6:
+
+14.23
+
+Un estudiante necesita aprobar una serie de cursos para graduarse y esos cursos tienen una serie de prerrequisitos que hay que cumplir. Suponga que se ofrecen todos los cursos de cada semestre y que el estudiante se puede matricular de un número ilimitado de cursos.A partir de una lista de cursos y sus prerrequisitos, calcule un plan que requiera el número mínimo de semestres.
+
+
+La idea es asumir que tengo un grafo dirigido G, donde cada nodo representa un curso, y una arista dirigida(u,v) indica que el curso u es un prerequisito del curso v.
+
+inicializar una lista de grados de entrada, donde grados[i] es el número de prerequisitos (aristas entrantes) del curso i.
+
+inicializar una lista semestres donde semestres[i] es el número mínimo de semestres necesarios para completar el curso i
+
+crear una cola para almacenar los nodos de grados de entrada cero (cursos sin prerrequisitos)
+
+
+para cada nodo en el grafo
+
+-Calcular el grado de entrada(el número de aristas entrantes, numero de prerequisitos) de cada nodo y almacenarlo en la lista
+
+si el grado de entrada de un nodo es 0(no tiene prerrequisitos)
+
+ -añadir ese nodo a la cola
+ -establece semestre[nodo] = 1 , ya qué ese curso puede ser tomado en el primer semestre
+
+-Inicializar un contador de semestresMaximos = 0
+
+
+INICIO
+
+función calcularMinimoSemestres(Grafo G, entero N)
+
+  COM
+
+  lista enteros grados[N]
+  lista enteros semestres[N]
+  Cola Cola
+
+  Para i desde 0 hasta N-1 hacer
+    grados[i] = 0
+    semestres[i] = 0
+  Fin Para
+
+  // Calcular el grado de entrada para cada nodo
+  Para cada nodo u en el grafo G hacer
+    Para cada nodo v adyacente a u hacer
+      grados[v] = grados[v] + 1
+    Fin Para
+  Fin Para
+
+  // Añadir nodos con grado de entrada 0(sin prerrequisitos) a la cola
+  Para cada nodo u en el grafo G hacer
+    Si grados[u] = 0 entonces
+      Cola.encolar(u)
+      semestres[u] = 1
+    Fin Si
+  Fin Para
+
+  entero semestresMaximos = 0
+
+
+  Mientras Cola no esté vacía hacer
+    nodo u = Cola.desencolar()
+    
+    Para cada nodo v adyacente a u hacer
+      grados[v] = grados[v] - 1
+      
+      Si grados[v] = 0 entonces
+        Cola.encolar(v)
+        semestres[v] = semestres[u] + 1
+        Si semestres[v] > semestresMaximos entonces
+          semestresMaximos = semestres[v]
+        Fin Si
+      Fin Si
+    Fin Para
+  Fin Mientras
+
+  devolver semestresMaximos
+
+Fin Función
+
+FIN
+
+
+
+14.25
+
+Suponga que tiene un grafo en el que cada vértice representa una computadora y en el que cada arista representa una conexión directa entre dos computadoras.
+
+Cada arista (v,w) tiene un peso P v,w que representa la probabilidad de que una transferencia de red entre v y w tenga éxito 0 < p v,w <= 1. Escriba un programa que encuentre la forma más fiable de transferir datos desde una computadora inicial designada S a todas las demás computadoras de red.
+
+
+Enfoque, utilizar Dijkstra pero en vez de encontrar el camino de menor costo entre el origen y cada uno de los vértices del grafo, encontramos el camino de mayor costo, que representa la mayor probabilidad de éxito en la transferencia de datos.
+
+Supongo que la computadora Inicial se almacena en un vértice llamado verticeInicial
+
+Función Dijkstra
+COM
+Inicializar S, D
+S = {verticeInicial};
+
+para cada i en V - {verticeInicial}
+D[i] = 0  // El valor inicial es 0 ya que estamos maximizando la probabilidad
+D[start] = 1  // La probabilidad de llegar al nodo inicial es 1
+
+Mientras V <> S hacer
+Elegir w perteneciente a V-S, tal que la distancia D[w)] sea un máximo
+
+Agregar w a S
+ParaCada v perteneciente a V-S hacer
+
+D[v] = max (D[v], D[w] * probabilidad(w,v)
+
+FinMientras;
+
+FIN {Dijkstra}
